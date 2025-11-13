@@ -7,11 +7,6 @@ def main():
     g = TicTacToe()
     modes(g)
 
-    # player_x = Hardcore_AI_Player('x')
-    # player_o = Easy_AI_Player('o')
-    # play(g, player_x, player_o)
-
-
 class TicTacToe():
 
     def __init__(self):
