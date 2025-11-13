@@ -95,10 +95,9 @@ Following the logic in the example above.
             return True
         if self.board[2] == letter and self.board[4] == letter and self.board[6] == letter:
             return True
-        else:
-            return False
+        return False
 
-    def empty_squares(self):
+    def all_empty_squares(self):
         if self.board.count(' ') == 9:
             return True
         else:
@@ -112,6 +111,11 @@ Following the logic in the example above.
 
     def num_empty_squares(self):
         return self.board.count(' ')
+
+    def only_move(self):
+        for i, x in enumerate(self.board):
+            if self.board[i] == ' ':
+                return i
 
     def available_moves(self):
         return [i for i, x in enumerate(self.board) if x == ' ']
@@ -178,7 +182,7 @@ def modes(game):
                     else:
                         raise print("Please only insert 'x' or 'o'")
                 while True:
-                    diff = input("Do you want the computer to be:\neasy,\nmedium,\nhard,\nhardcore.\n").lower().strip()
+                    diff = input("Do you want the computer to be:\n -easy\n -medium\n -hard\n -hardcore\n--> ").lower().strip()
                     if diff == 'easy':
                         if x_or_o == 'x':
                             x_p = Easy_AI_Player('x')
@@ -261,22 +265,22 @@ def modes(game):
             game.o_score += 1
             game.print_score()
         while True:
-            again = input("Wanna go again?\n").lower().strip()
+            again = input("(Insert 'mode' to change mode)\nWanna go again?\n").lower().strip()
             if again == 'yes':
-                chane_mode = input("Do you want do change the game mode?\n").lower().strip()
-                if chane_mode == 'yes':
-                    game.reset_score()
-                    break
-                else:
-                    game.reset()
-                    p_won = play(game, x_p, o_p)
-                    if p_won == 'x':
-                        game.x_score += 1
-                        game.print_score()
-                    elif p_won == 'o':
-                        game.o_score += 1
-                        game.print_score()
-            else:
+                game.reset()
+                p_won = play(game, x_p, o_p)
+                if p_won == 'x':
+                    game.x_score += 1
+                    game.print_score()
+                elif p_won == 'o':
+                    game.o_score += 1
+                    game.print_score()
+
+            elif again == 'mode':
+                print("Here we go again...\n")
+                game.reset_score()
+                break
+            elif again == 'no':
                 print("Thanks for playing. See ya 👋")
                 break
 
@@ -294,6 +298,9 @@ class HumanPlayer(Player):
 
     def get_move(self, game):
         global spot
+        if game.num_empty_squares() == 1:
+            spot = game.only_move()
+            return spot
         valid_square = False
         game.instructions_board()
         while not valid_square:
@@ -304,7 +311,7 @@ class HumanPlayer(Player):
                 else:
                     valid_square = True
             except ValueError:
-                print("Square is not valid, try again")
+                print("Square is not valid, try again\n")
         return spot
 
 
